@@ -1,0 +1,2 @@
+# LLM-Nmap
+We will build a framework where a user can request Nmap scans in natural language. An LLM, integrated through the llm CLI and a custom Nmap tool, will translate the request into an Nmap command, execute it, and summarize the results. The final demo will show that describing the desired analysis to the LLM is enough to configure and run Nmap, collect the output, and present it clearly to the user.
