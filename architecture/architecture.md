@@ -23,7 +23,7 @@ For this network, I used 3 VMs:
 NOTE : when you install Ubuntu Server with Virtual Box set your credentials before starting the machine
 
 
-![UbuntuServerPassword]("src/UbuntuServerPassword.png")
+![UbuntuServerPassword](src/UbuntuServerPassword.png)
 
 
 
