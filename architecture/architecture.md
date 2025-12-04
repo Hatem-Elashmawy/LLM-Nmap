@@ -16,9 +16,9 @@ Quick overview :
 ## Example of a Network (virutal box)
 
 For this network, we used 3 VMs:
-    - a virtual machine to execute requests through llm-nmap : *kali linux*
-    - a "classic" target VM : *Ubuntu Server* (to open specific ports) (https://ubuntu.com/download/server/thank-you?version=24.04.3&architecture=amd64&lts=true)
-    - a "vurlnerable" target VM : *bee box* (a VM with many ports already open)
+- a virtual machine to execute requests through llm-nmap : *kali linux*
+- a "classic" target VM : [*Ubuntu Server*](https://ubuntu.com/download/server/thank-you?version=24.04.3&architecture=amd64&lts=true) (to open specific ports) 
+- a "vurlnerable" target VM : *bee box* (a VM with many ports already open)
 
 **NOTE** : when you install Ubuntu Server with Virtual Box set your credentials before starting the machine.
 ![UbuntuServerPassword](src/UbuntuServerPassword.png)
@@ -44,6 +44,50 @@ Once done, you can start your VMs and send a ping command to each of them to ens
 
 ## LLM-Nmap Installation
 
+To setup LLM-Nmap we need to install llm in first place :
+```
+pip install llm
+```
+![SetUpLLM](src/SetUpLLM.png)
+
+For this project we will use gemini as llm *(free api)*:
+
+```
+llm install llm-gemini
+llm keys set gemini
+```
+
+Then to test if everything is working :
+```
+llm -m gemini-2.0-flash 'Hello'
+```
+![SetupGemini1](src/SetupGemini1.png)
+
+![SetupGemini2](src/SetupGemini2.png)
+
+Once done, download [*llm-tools-nmap.py*](https://github.com/peter-hackertarget/llm-tools-nmap) and put it in your projet file
+
+You are ready now :)
+
+Quick tests :
+
+```
+llm -m gemini-2.0-flash --functions llm-tools-nmap.py "Scan my local network to find live hosts with ping" 
+```
+![LLM-Nmap - Scan network with ping](<src/LLM-Nmap - Scan network with ping.png>)
+
+The *Ubuntu Server* is detected by the tool.
+Then you can perform some specific scans :
+```
+llm -m gemini-2.0-flash --functions llm-tools-nmap.py "Make a quick scan of 10.0.2.15"
+```
+![LLM-Nmap - Quick scan no open ports](<src/LLM-Nmap - Quick scan no open ports.png>)
+
+No open ports found.
+This result was expeceted as we don't open any ports.
+
+Let's see how to do this.
+
 ## Ubuntu Server - Open ports
 
 To open ssh port on Ubuntu Server : 
@@ -58,3 +102,18 @@ Then check if the ssh port (port 22) is open
 ```
 systemctl status ssh
 ```
+
+![UbuntuServer Open SSH port](<src/UbuntuServer Open SSH port.png>)
+
+
+Now let's try again LLM-Nmap :
+
+![LLM-Nmap - Quick scan ssh port open](<src/LLM-Nmap - Quick scan ssh port open.png>)
+
+The port 22 is found.
+
+And a quick comparaison with nmap tool :
+
+![LLM-Nmap VS Nmap - Quick scan ssh port open](<src/LLM-Nmap VS Nmap - Quick scan ssh port open.png>)
+
+Your setup is now ready, let's enjoy and play with it !
