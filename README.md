@@ -22,8 +22,8 @@ The framework should:
 
 ## Next steps
 
-Explanation of tools llm and nmap (how it detected open port)
-Opening other ports http, udp, …
-Trying another VM (beebox)
-High light the limits of llm agent (some the answer is not really intersting + random answer)
-Try with another model (chat gpt api)
+- Explanation of tools llm and nmap (how it detected open port)
+- Opening other ports http, udp, …
+- Trying another VM (beebox)
+- High light the limits of llm agent (some the answer is not really intersting + random answer)
+- Try with another model (chat gpt api)
