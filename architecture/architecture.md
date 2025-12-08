@@ -117,3 +117,46 @@ And a quick comparaison with nmap tool :
 ![LLM-Nmap VS Nmap - Quick scan ssh port open](<src/LLM-Nmap VS Nmap - Quick scan ssh port open.png>)
 
 Your setup is now ready, let's enjoy and play with it !
+
+## Cross-Machine Testing - LLM-Nmap on Colleague's Laptop
+
+In this scenario, we performed testing across different machines on the same WiFi network:
+- **Target Machine**: Mac laptop (with open ports)
+- **Scanning Machine**: Colleague's laptop (executing Nmap and LLM-Nmap scans on the same network)
+
+### Target Machine - Mac with Open Ports
+
+First, we show the open ports on the Mac machine:
+
+![Mac Open Ports](src/mac_open_ports_screenshot.png)
+
+*Figure: Screenshot showing the open ports on the Mac laptop*
+
+Next, we show the IP address of the Mac machine:
+
+![Mac IP Address](src/mac_ip_address_screenshot.png)
+
+*Figure: Screenshot showing the IP address of the Mac laptop*
+
+### Colleague's Laptop - Nmap and LLM-Nmap Scans
+
+The colleague performed both traditional Nmap and LLM-Nmap scans targeting the Mac machine:
+
+**Traditional Nmap Scan Results:**
+
+![Nmap Scan on Mac Target]()
+
+*Colleague's contribution: Traditional Nmap scan results showing detected ports and services on the Mac*
+
+**LLM-Nmap Scan Results:**
+
+![LLM-Nmap Scan on Mac Target]()
+
+*Colleague's contribution: LLM-Nmap scan results showing the comparison between traditional Nmap and AI-powered scanning*
+
+### Comparison and Analysis
+
+This cross-machine testing demonstrates how LLM-Nmap performs when:
+- Running from a different physical machine
+- Scanning across a network to a different device
+- Identifying and comparing results with traditional Nmap tools
