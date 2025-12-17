@@ -218,11 +218,7 @@ llm -m gemini-2.0-flash --functions llm-tools-nmap.py \
     "Make a quick scan of 10.0.2.15"
 ```
 
-*(Screenshot from `architecture.md`):*
-
-```markdown
 ![LLM–Nmap – Quick scan, no open ports](<src/LLM-Nmap - Quick scan no open ports.png>)
-```
 
 At this stage, no open ports are found. This is expected, because we have not yet enabled any service on the Ubuntu Server.
 
@@ -291,15 +287,11 @@ On the Mac, we identify:
 - The IP address (shown in the screenshot).
 - The open ports (e.g. enabled services).
 
-*(Screenshots referenced in `architecture.md`):*
-
-```markdown
 ![Mac Open Ports](src/mac_open_ports_screenshot.png)
 *Figure: Screenshot showing the open ports on the Mac laptop*
 
 ![Mac IP Address](src/mac_ip_address_screenshot.png)
 *Figure: Screenshot showing the IP address of the Mac laptop*
-```
 
 #### 5.2.2 Nmap and LLM–Nmap Scans from Kali
 
