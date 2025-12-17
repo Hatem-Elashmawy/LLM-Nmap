@@ -107,11 +107,7 @@ We use a **VirtualBox NAT Network** so that the VMs can communicate with each ot
    - A name (e.g. `LLM-Nmap-NAT`),
    - An IP range (e.g. `10.0.2.0/24`).
 
-*(Screenshot as in `architecture.md`):*
-
-```markdown
 ![Create NAT Network](src/CreateNAT.png)
-```
 
 #### 3.2.2 Attaching VMs to the NAT Network
 
@@ -121,11 +117,7 @@ For each VM (Kali, Ubuntu Server, BeeBox):
 2. Set **Attached to** = `NAT Network`.  
 3. Select the NAT network created earlier (`LLM-Nmap-NAT`).
 
-*(Screenshot as in `architecture.md`):*
-
-```markdown
 ![Add VMs to NAT Network](src/AddVMsToNAT.png)
-```
 
 #### 3.2.3 Verifying Connectivity
 
@@ -142,11 +134,7 @@ ping 10.0.2.15       # Ubuntu Server in our example
 ping <beebox-ip>     # will be used in Scenario 3
 ```
 
-*(Screenshot as in `architecture.md`):*
-
-```markdown
 ![VM Ping to VM](src/VMpingToVM.png)
-```
 
 If the pings succeed, the VMs are on the same network and reachable.
 
@@ -178,11 +166,7 @@ On Kali:
 pip install llm
 ```
 
-*(Screenshot from `architecture.md`):*
-
-```markdown
 ![Set Up LLM](src/SetUpLLM.png)
-```
 
 ### 4.2 Configuring Gemini
 
@@ -206,12 +190,8 @@ We use Google Gemini as the LLM provider.
    llm -m gemini-2.0-flash "Hello"
    ```
 
-*(Screenshots from `architecture.md`):*
-
-```markdown
 ![Setup Gemini – Test 1](src/SetupGemini1.png)
 ![Setup Gemini – Test 2](src/SetupGemini2.png)
-```
 
 If a valid text response is returned, the LLM configuration is working.
 
@@ -227,11 +207,7 @@ If a valid text response is returned, the LLM configuration is working.
        "Scan my local network to find live hosts with ping"
    ```
 
-*(Screenshot from `architecture.md`):*
-
-```markdown
 ![LLM–Nmap – Scan network with ping](<src/LLM-Nmap - Scan network with ping.png>)
-```
 
 In our setup, the **Ubuntu Server** VM is detected by the tool.
 
@@ -269,11 +245,7 @@ sudo systemctl enable --now ssh
 systemctl status ssh
 ```
 
-*(Screenshot from `architecture.md`):*
-
-```markdown
 ![Ubuntu Server – Open SSH port](<src/UbuntuServer Open SSH port.png>)
-```
 
 After this, port **22/tcp** should be open on 10.0.2.15.
 
@@ -286,11 +258,7 @@ llm -m gemini-2.0-flash --functions llm-tools-nmap.py \
     "Make a quick scan of 10.0.2.15"
 ```
 
-*(Screenshot from `architecture.md`):*
-
-```markdown
 ![LLM–Nmap – Quick scan, SSH port open](<src/LLM-Nmap - Quick scan ssh port open.png>)
-```
 
 Port **22/tcp** is now detected as open.
 
@@ -302,11 +270,7 @@ To validate the result, we run a manual Nmap scan from Kali:
 nmap -sV 10.0.2.15
 ```
 
-*(Screenshot from `architecture.md`):*
-
-```markdown
 ![LLM–Nmap vs Nmap – Quick scan, SSH port open](<src/LLM-Nmap VS Nmap - Quick scan ssh port open.png>)
-```
 
 The manual output confirms that port 22 is open and identifies the SSH service.  
 This verifies that:
