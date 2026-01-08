@@ -144,13 +144,13 @@ The colleague performed both traditional Nmap and LLM-Nmap scans targeting the M
 
 **Traditional Nmap Scan Results:**
 
-![Nmap Scan on Mac Target](<src/LLM-Nmap VS Nmap - Quick scan ssh port open.png>)
+![Nmap Scan on Mac Target](<src/NmapOnMac.png>)
 
 *Colleague's contribution: Traditional Nmap scan results showing detected ports and services on the Mac*
 
 **LLM-Nmap Scan Results:**
 
-![LLM-Nmap Scan on Mac Target](<src/LLM-Nmap VS Nmap - Quick scan ssh port open.png>)
+![LLM-Nmap Scan on Mac Target](<src/LLM-NmapOnMac.png>)
 
 *Colleague's contribution: LLM-Nmap scan results showing the comparison between traditional Nmap and AI-powered scanning*
 
