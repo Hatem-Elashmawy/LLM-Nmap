@@ -104,8 +104,7 @@ Then check if the ssh port (port 22) is open
 systemctl status ssh
 ```
 
-![UbuntuServer Open SSH port](<src/Ubuntu Server/US UbuntuServer Open SSH port.png>)
-
+![UbuntuServer Open SSH port](<src/Ubuntu Server/UbuntuServer Open SSH port.png>)
 
 Now let's try again LLM-Nmap :
 
