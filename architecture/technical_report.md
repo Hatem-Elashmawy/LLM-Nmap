@@ -104,10 +104,10 @@ We use a **VirtualBox NAT Network** so that the VMs can communicate with each ot
 1. Open VirtualBox.  
 2. Go to **Tools → NAT Networks**.  
 3. Click **Create** and configure:
-   - A name (e.g. `LLM-Nmap-NAT`),
+   - A name (e.g. `NSProject`),
    - An IP range (e.g. `10.0.2.0/24`).
 
-![Create NAT Network](src/CreateNAT.png)
+![Create NAT Network](src/Setup/CreateNAT.png)
 
 #### 3.2.2 Attaching VMs to the NAT Network
 
@@ -115,26 +115,30 @@ For each VM (Kali, Ubuntu Server, BeeBox):
 
 1. Open **Settings → Network**.  
 2. Set **Attached to** = `NAT Network`.  
-3. Select the NAT network created earlier (`LLM-Nmap-NAT`).
+3. Select the NAT network created earlier (`NSProject`).
 
-![Add VMs to NAT Network](src/AddVMsToNAT.png)
+![Add VMs to NAT Network](src/Setup/AddVMsToNAT.png)
 
 #### 3.2.3 Verifying Connectivity
 
 On each VM, retrieve its IP address:
 
 ```bash
-ifconfig    # or: ip addr
+ifconfig
 ```
 
 From the Kali VM, test reachability:
 
 ```bash
 ping 10.0.2.15       # Ubuntu Server in our example
-ping <beebox-ip>     # will be used in Scenario 3
 ```
 
-![VM Ping to VM](src/VMpingToVM.png)
+![Kali Ping to Ubuntu Serveur](<src/Ubuntu Server/US ping Ubuntu Server.png>)
+
+```bash
+ping 10.0.2.7        # Beebox in our example
+```
+![Kali Ping to Beebox](<src/Beebox/2 ping beebox.png>)
 
 If the pings succeed, the VMs are on the same network and reachable.
 
@@ -155,22 +159,27 @@ If the pings succeed, the VMs are on the same network and reachable.
 ---
 
 ## 4. LLM–Nmap Setup on Kali
+*NOTE: For the following part, we will only use the Ubuntu Server as a target, but it also works for the Beebox VM or any VM/real computer you use.*
 
 This section describes the concrete steps to configure the LLM–Nmap framework on the Kali VM.
 
 ### 4.1 Installing `llm`
 
-On Kali:
+On Kali, create a virtual environment and install *llm*:
 
 ```bash
-pip install llm
+python3 -m venv <name of your venv> # create a virtual environment
+
+source <name of your venv>/bin/activate  # activate the virtual environment
+
+pip install llm # install llm
 ```
 
-![Set Up LLM](src/SetUpLLM.png)
+![Set Up LLM](src/Setup/SetUpLLM.png)
 
 ### 4.2 Configuring Gemini
 
-We use Google Gemini as the LLM provider.
+With *llm* we can use a lot of different llms such as ChatGPT or Gemini. Wed decided to use Google Gemini as the LLM provider because the API is available for free.
 
 1. Install the Gemini plugin:
 
@@ -178,7 +187,7 @@ We use Google Gemini as the LLM provider.
    llm install llm-gemini
    ```
 
-2. Set the Gemini API key (obtained from Google AI Studio):
+2. Set the Gemini API key (obtained from [Google AI Studio](https://aistudio.google.com/)):
 
    ```bash
    llm keys set gemini
@@ -190,12 +199,14 @@ We use Google Gemini as the LLM provider.
    llm -m gemini-2.0-flash "Hello"
    ```
 
-![Setup Gemini – Test 1](src/SetupGemini1.png)
-![Setup Gemini – Test 2](src/SetupGemini2.png)
+![Setup Gemini – Test 1](src/Setup/SetupGemini1.png)
+![Setup Gemini – Test 2](src/Setup/SetupGemini2.png)
 
 If a valid text response is returned, the LLM configuration is working.
 
 ### 4.3 Adding `llm-tools-nmap.py`
+
+To perform a request to Nmap through an LLM, we need to add the Python tool *llm-tools-nmap.py*:
 
 1. Download `llm-tools-nmap.py` from the reference repository:  
    <https://github.com/peter-hackertarget/llm-tools-nmap>
@@ -207,9 +218,10 @@ If a valid text response is returned, the LLM configuration is working.
        "Scan my local network to find live hosts with ping"
    ```
 
-![LLM–Nmap – Scan network with ping](<src/LLM-Nmap - Scan network with ping.png>)
+![LLM–Nmap – Scan network with ping](<src/Ubuntu Server/US LLM-Nmap - Scan network with ping.png>)
 
 In our setup, the **Ubuntu Server** VM is detected by the tool.
+*NOTE: The Beebox isn't detected because the VM was shut down when the screenshot was taken.*
 
 Then, we perform a more specific scan of the Ubuntu Server at IP **10.0.2.15**:
 
@@ -218,7 +230,7 @@ llm -m gemini-2.0-flash --functions llm-tools-nmap.py \
     "Make a quick scan of 10.0.2.15"
 ```
 
-![LLM–Nmap – Quick scan, no open ports](<src/LLM-Nmap - Quick scan no open ports.png>)
+![LLM–Nmap – Quick scan, no open ports](<src/Ubuntu Server/US LLM-Nmap - Quick scan no open ports.png>)
 
 At this stage, no open ports are found. This is expected, because we have not yet enabled any service on the Ubuntu Server.
 
@@ -232,6 +244,8 @@ We implemented and tested three main scenarios to demonstrate the behaviour of L
 
 #### 5.1.1 Opening SSH on Ubuntu Server
 
+We previously saw that no ports were open. Let's open a port (e.g. SSH) to see if it will be detected by llm-nmap.
+
 On the Ubuntu Server VM (10.0.2.15):
 
 ```bash
@@ -241,7 +255,7 @@ sudo systemctl enable --now ssh
 systemctl status ssh
 ```
 
-![Ubuntu Server – Open SSH port](<src/UbuntuServer Open SSH port.png>)
+![Ubuntu Server – Open SSH port](<src/Ubuntu Server/UbuntuServer Open SSH port.png>)
 
 After this, port **22/tcp** should be open on 10.0.2.15.
 
@@ -254,7 +268,7 @@ llm -m gemini-2.0-flash --functions llm-tools-nmap.py \
     "Make a quick scan of 10.0.2.15"
 ```
 
-![LLM–Nmap – Quick scan, SSH port open](<src/LLM-Nmap - Quick scan ssh port open.png>)
+![LLM–Nmap – Quick scan, SSH port open](<src/Ubuntu Server/US LLM-Nmap - Quick scan ssh port open.png>)
 
 Port **22/tcp** is now detected as open.
 
@@ -263,10 +277,10 @@ Port **22/tcp** is now detected as open.
 To validate the result, we run a manual Nmap scan from Kali:
 
 ```bash
-nmap -sV 10.0.2.15
+nmap 10.0.2.15
 ```
 
-![LLM–Nmap vs Nmap – Quick scan, SSH port open](<src/LLM-Nmap VS Nmap - Quick scan ssh port open.png>)
+![LLM–Nmap vs Nmap – Quick scan, SSH port open](<src/Ubuntu Server/US LLM-Nmap VS Nmap - Quick scan ssh port open.png>)
 
 The manual output confirms that port 22 is open and identifies the SSH service.  
 This verifies that:
@@ -276,7 +290,7 @@ This verifies that:
 
 ---
 
-### 5.2 Scenario 2 – Kali VM Scanning a Physical Mac Host
+### 5.2 Scenario 2 – Kali VM Scanning a Physical Mac Host (10.184.43.104)
 
 In this scenario, Kali runs as a VM on one laptop, and the target is a Mac laptop on the same Wi-Fi network.
 
@@ -287,10 +301,10 @@ On the Mac, we identify:
 - The IP address (shown in the screenshot).
 - The open ports (e.g. enabled services).
 
-![Mac Open Ports](src/mac_open_ports_screenshot.png)
+![Mac Open Ports](src/Mac/mac_open_ports_screenshot.png)
 *Figure: Screenshot showing the open ports on the Mac laptop*
 
-![Mac IP Address](src/mac_ip_address_screenshot.png)
+![Mac IP Address](src/Mac/mac_ip_address_screenshot.png)
 *Figure: Screenshot showing the IP address of the Mac laptop*
 
 #### 5.2.2 Nmap and LLM–Nmap Scans from Kali
@@ -300,8 +314,10 @@ From the Kali VM, we run:
 Manual scan:
 
 ```bash
-nmap -sV <mac-ip>
+nmap -A 10.184.43.104
 ```
+![Nmap Scan on Mac Target](src/Mac/NmapOnMac.png)
+*Traditional Nmap scan results showing detected ports and services on the Mac*
 
 LLM-driven scan:
 
@@ -310,17 +326,8 @@ llm -m gemini-2.0-flash --functions llm-tools-nmap.py \
     "Scan <mac-ip> and show me which ports are open and what services are running"
 ```
 
-*(Placeholders – to be filled with your screenshots for this scenario)*
-
-```markdown
-![Nmap Scan on Mac Target](src/mac_nmap_scan.png)
-*Traditional Nmap scan results showing detected ports and services on the Mac*
-
-![LLM–Nmap Scan on Mac Target](src/mac_llm_nmap_scan.png)
+![LLM–Nmap Scan on Mac Target](src/Mac/LLM-NmapOnMac.png)
 *LLM–Nmap scan results showing the comparison between traditional Nmap and AI-powered scanning*
-```
-
-You can rename `mac_nmap_scan.png` and `mac_llm_nmap_scan.png` to the actual filenames you use.
 
 #### 5.2.3 Observations
 
@@ -330,7 +337,7 @@ You can rename `mac_nmap_scan.png` and `mac_llm_nmap_scan.png` to the actual fil
 
 ---
 
-### 5.3 Scenario 3 – Kali VM Scanning BeeBox (Vulnerable Target)
+### 5.3 Scenario 3 – Kali VM Scanning BeeBox (Vulnerable Target) (10.0.2.7)
 
 BeeBox is a deliberately vulnerable VM with many open ports and insecure applications.
 
@@ -339,53 +346,66 @@ BeeBox is a deliberately vulnerable VM with many open ports and insecure applica
 From Kali:
 
 ```bash
-llm -m gemini-2.0-flash --functions llm-tools-nmap.py \
-    "Scan the NAT network and list all live hosts"
+llm -m gemini-2.5-flash --functions llm-tools-nmap.py \
+    "Scan my local network to find live hosts with ping"
 ```
 
 BeeBox should appear as one of the live hosts in the output.
 
-*(Placeholder for BeeBox host discovery screenshot):*
-
-```markdown
-![BeeBox detected in host discovery](src/beebox_host_discovery.png)
-```
+![BeeBox detected in host discovery](<src/Beebox/beebox scan local network.png>)
 
 #### 5.3.2 Service Enumeration on BeeBox
 
-Next, we perform a more detailed scan:
+Next, let's start with a basic scan using llm :
 
 ```bash
-llm -m gemini-2.0-flash --functions llm-tools-nmap.py \
-    "Run a detailed service scan on <beebox-ip> and summarize the open ports and services"
+llm -m gemini-2.5-flash --functions llm-tools-nmap.py "Make a quick scan of 10.0.2.7"
 ```
+![Beebox llm-nmap quick scan](<src/Beebox/3 llm-nmap beebox quick scan.png>)
 
-*(Placeholder for BeeBox LLM–Nmap scan screenshot):*
-
-```markdown
-![LLM–Nmap detailed scan on BeeBox](src/beebox_llm_scan.png)
-```
+The scan found 13 different open ports.
 
 #### 5.3.3 Comparison with Manual Nmap
 
-Finally, we run a manual scan:
+Let's compare with a manual scan:
 
 ```bash
-nmap -sV <beebox-ip>
+nmap 10.0.2.7
 ```
+![Beebox nmap](<src/Beebox/4 nmap beebox.png>)
 
-*(Placeholder for manual BeeBox Nmap scan screenshot):*
+The scan through Nmap reveals that 17 ports were open.
 
-```markdown
-![Manual Nmap scan on BeeBox](src/beebox_nmap_manual.png)
+So, with the basic instructions, llm-nmap didn't succeed in finding all open ports (4 are missing compared to Nmap).
+
+Let's try to challenge llm-nmap with a more complex prompt.
+
+#### 5.3.4 Challenging llm-nmap
+
+We saw that the basic prompt with llm-nmap wasn't enough to find every open port.
+
+Let's just make a simple change, changing "quick" to "deep" and see the results.
+
+```bash
+llm -m gemini-2.5-flash --functions llm-tools-nmap.py "Make a quick deep of 10.0.2.7"
 ```
+![Beebox deep scan llm-nmap](<src/Beebox/5 beebox deep scan complete answer.png>)
 
-We will compare:
+This request took longer to complete but provided better results (similar to using the -A option with Nmap).
+All ports that the "basic" Nmap request found were found.
 
-- The open ports and services reported by LLM–Nmap.
-- The open ports and services reported by manual Nmap.
+We can also use llm-nmap to ask it to perform tasks that Nmap can't do, such as generating reports.
+Since we are in a security context, let's combine the scanning request with security report generation :
 
-BeeBox will provide a **richer and more realistic example**, with many open services, which will help to show how the LLM can summarize and interpret more complex scan output.
+```bash
+llm -m gemini-2.5-flash --functions llm-tools-nmap.py "Make a quick scan of 10.0.2.7 and make me a report of the result. Highlight network vulnerabilities."
+```
+*NOTE: We requested a "quick" scan to get results faster than a "deep" scan.* 
+![beebox vuln report part 1](<src/Beebox/8 beebox vuln report part 1.png>)
+![beebox vuln report part 2](<src/Beebox/8 beebox vuln report part 2.png>)
+![beebox vuln report part 3](<src/Beebox/8 beebox vuln report part 3.png>)
+
+We obtained a complete cybersecurity report including the open ports found, potential risks, and recommendations to improve the security of our network.
 
 ---
 
@@ -414,27 +434,33 @@ Therefore, the implemented framework satisfies the requested workflow.
 ### 6.2 Advantages
 
 - **Ease of use:**  
-  Users can describe what they want to do instead of remembering Nmap syntax.
+  Users can describe what they want to do instead of remembering Nmap syntax (No need to know the different parameters: -A, -s, -V, -p, -n ...)
 
 - **Flexibility:**  
-  The same setup can scan virtual machines, a vulnerable lab target (BeeBox), and a physical machine (Mac), as long as they are reachable.
-
-- **Extensibility:**  
-  The approach can be extended to other tools by writing new plugins similar to `llm-tools-nmap.py`.
+  Users can use llm-nmap to perform complex tasks that Nmap cannot (such as explaining ports, generating reports, and more.)
 
 ### 6.3 Limitations
 
 - **Dependence on the LLM:**  
   The quality of the chosen scan depends on the LLM. It may sometimes select suboptimal flags or misinterpret ambiguous prompts.
+  
+- **Inconsistent for the same request:**
+  Since it uses an LLM, the quality of the responses is random and inconsistent. Examples with a short and a complex answer for the same request :
+  ![beebox deep scan complete answer](<src/Beebox/5 beebox deep scan complete answer.png>)
+  ![beebox deep scan another answer](<src/Beebox/6 beebox deep scan another answer.png>)
 
-- **Lack of strict constraints:**  
-  Without additional checks, an LLM could, in principle, try to scan large ranges or external networks. In our project, we manually restrict ourselves to the lab and authorized targets.
+- **No answer:**
+  Sometimes llm-nmap doesn't respond to a request and instead replies with a question.
+  ![LLM-Nmap - Scan network without ping](<src/Examples of issues/LLM-Nmap - Scan network without ping.png>)
 
-- **Performance and rate limits:**  
-  Using an online LLM (Gemini) introduces latency and potential API limits, though this did not significantly impact our small-scale experiments.
 
-- **Output parsing:**  
-  In this project, we rely mainly on the raw Nmap output that is embedded in the LLM response, plus a short natural-language summary. A more advanced system might parse the XML output of Nmap and present structured tables or dashboards.
+### 6.4 Difficulties encountered during the project
+
+For this project, we were limited to using an older Gemini model, as it is the only one with a free API. We were unable to test llm-nmap on newer LLMs, but we can expect their responses - especially for secondary tasks - to be more accurate and consistent.
+
+Additionally, as free API users, we were constrained by the number of requests we could make.
+
+![API limit rate](<src/Examples of issues/API limit rate.png>)
 
 ---
 
