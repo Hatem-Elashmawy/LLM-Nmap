@@ -21,8 +21,10 @@ The report includes:
 - Scenario-based validation (LLM–Nmap vs manual Nmap)
 
 ## Repo structure (high level)
-- `architecture/` – technical report and architecture documentation
-- `docs/` – extra documentation and supporting material
+- `architecture/` – main documentation and the full technical report in Markdown (`technical_report.md`)
+- `Technical report/` – exported/report assets (e.g., final report material used for submission)
+- `docs/` – project plan and additional supporting documentation
+- `.gitignore`, `.gitattributes` – Git configuration files
 
 ## Credits
 Network Security – University of Pisa  
