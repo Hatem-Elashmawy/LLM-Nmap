@@ -11,3 +11,6 @@ venv/
 
 # Scan results / temp files
 results/
+
+# MAC
+.DS_Store

@@ -120,22 +120,39 @@ We will implement at least **two** scenarios:
 
 ## 6. Work Split (Students)
 
-- **Student A (Hatem)**
-  - Implement the Python Nmap wrapper (`src/nmap_runner.py`).
-  - Integrate the wrapper with the LLM (tool definition + orchestration script).
-  - Handle result formatting and LLM-based summarization of scan results.
-  - Write the Setup and Implementation parts of the technical report.
+Student A (Hatem)
 
-- **Student B (Aurelien)**
-  - Build and document the test network lab (VirtualBox VMs, IPs, open ports).
-  - Produce manual Nmap baselines in `examples/manual_scans/` for comparison.
-  - Design and validate the demo scenarios used in the evaluation.
-  - Write the Architecture, Evaluation, and Security/Limitations parts of the report.
+- Co-implemented and exercised the LLM–Nmap framework from the user / operator side:
+  - Configured and used the `llm` CLI with Gemini to run LLM-driven Nmap scans.
+  - Executed and validated multiple scanning scenarios (VM–VM, VM–Mac, BeeBox) based on the framework.
+  - Actively participated in debugging connectivity, NAT networking, and scan behaviour during the tests.
+- Designed and documented the experiments:
+  - Described the exact steps to reproduce the lab (commands, parameters, IPs, tools).
+  - Structured the scenarios and highlighted how the LLM translates natural-language prompts into Nmap commands.
+- Wrote the technical report:
+  - System Architecture and Environment (from the lab point of view).
+  - Setup and Implementation of LLM–Nmap (Kali, `llm`, Gemini, `llm-tools-nmap.py`).
+  - Detailed description of the scenarios, comparisons with manual Nmap, and discussion of advantages/limitations.
+  - Drafted the initial outline for the final presentation.
 
-- **Both (Hatem & Aurelien)**
-  - Test and debug the end-to-end demo on Kali inside VirtualBox.
-  - Polish the technical report and, if needed, prepare presentation slides.
+Student B (Aurélien)
 
+- Implemented and maintained the practical framework:
+  - Set up the VirtualBox lab (Kali, Ubuntu Server, BeeBox, NAT network, IP addressing).
+  - Installed and configured the `llm` CLI, Gemini, and the existing `llm-tools-nmap.py` plugin on Kali.
+  - Defined and ran the initial scanning scenarios and collected raw outputs and screenshots.
+- Contributed to the experimental design:
+  - Helped refine the demo scenarios (what to scan, which ports/services to highlight, which screenshots to capture).
+  - Provided the baseline Nmap runs used for comparison with LLM-driven scans.
+
+Both (Hatem & Aurélien)
+
+- Tested and debugged the end-to-end demo on Kali inside VirtualBox and across the local network.
+- Verified that, given a natural-language description of an analysis, the LLM:
+  - correctly configures and runs Nmap,
+  - acquires the scan results,
+  - and presents them back to the user.
+- Polished the technical report and prepared the presentation slides.
 ---
 
 ## 7. Open Questions / To Decide

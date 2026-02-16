@@ -1,18 +1,11 @@
-
-
 # LLM–Nmap: Network Scanning Using Large Language Models
 
-**Students:**  
-- Aurélien Roumégoux  
-- Hatem Elashmawy  
-
+**Students:** Aurélien Roumégoux, Hatem Elashmawy  
 **Course:** Network Security – University of Pisa  
-**Project:** LLM–Nmap, a network scanning using LLM
-
----
+**Professors:** Rosario Garroppo, Michele Pagano  
+**Project:** LLM–Nmap (network scanning using an LLM)
 
 ## Abstract
-
 This report describes the design and implementation of a small framework that integrates Nmap with a Large Language Model (LLM) to perform network scans based on natural-language requests. The framework is built around the `llm` command-line tool, the `llm-tools-nmap.py` plugin, and Google Gemini as the LLM provider, running on a Kali Linux virtual machine inside a VirtualBox lab.
 
 We document how to set up the entire environment, from the virtual network to the LLM configuration, and we present several scenarios where the user describes the desired network analysis to the LLM. The LLM then selects and runs appropriate Nmap commands, the framework collects the scan results, and the output is presented back to the user in a human-readable form. Comparisons with manual Nmap scans are used to validate the correctness of the LLM-driven scans.
@@ -474,7 +467,21 @@ In this project, we built and evaluated a framework that combines Nmap with an L
 
 We implemented a small VirtualBox lab with Kali, Ubuntu Server, and BeeBox, and we also tested scans against a physical Mac host. Across all scenarios, LLM–Nmap produced results consistent with manual Nmap scans, demonstrating that the approach is feasible and practical for small-scale environments.
 
-Possible extensions include:
+### What LLM–Nmap Adds Beyond Plain Nmap
+
+While Nmap is powerful for discovering hosts, open ports, and services, it mainly produces **raw scan output** and requires the user to interpret and summarize results manually.  
+With LLM–Nmap, we can extend the workflow by asking the LLM to perform *post-processing tasks* that plain Nmap does not provide as a built-in feature.
+
+In particular, we used the LLM to:
+- Generate a **structured cybersecurity report** from the scan results.
+- Summarize the **open ports/services** found in a clear, human-readable way.
+- Highlight **potential risks** based on exposed services.
+- Provide **recommendations** to improve the security posture of the scanned network/hosts.
+
+This demonstrates that LLM–Nmap is not only a natural-language interface to Nmap, but also a layer that can transform scan outputs into actionable security documentation.
+
+
+Possible extensions include (Future Work):
 
 - Adding more strict safety constraints (e.g. whitelisting targets, limiting scan types).
 - Parsing Nmap XML output to build structured reports or dashboards.
